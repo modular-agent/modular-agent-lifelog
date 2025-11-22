@@ -1,0 +1,31 @@
+[package]
+name = "askit-lifelog"
+version = "0.1.0"
+edition = "2024"
+authors = ["Akira Ishino <akira@lumilab.jp>"]
+license = "Apache-2.0 OR MIT"
+
+[dependencies]
+active-win-pos-rs = { version = "0.9.1", optional = true }
+agent-stream-kit = "0.10"
+base64 = { version = "0.22.1", optional = true }
+chrono = "0.4.42"
+photon-rs = { version = "0.3.3", optional = true }
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.145"
+xcap = { version = "0.7.1", optional = true }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+cocoa = { version = "0.26.0", optional = true }
+objc = { version = "0.2.7", optional = true }
+
+[target.'cfg(target_os = "macos")'.build-dependencies]
+bindgen = { version = "0.68.1", optional = true }
+
+[features]
+default = ["application", "screen"]
+application = ["active-win-pos-rs", "cocoa", "objc", "bindgen"]
+screen = ["base64", "photon-rs", "xcap"]
+
+[patch.crates-io]
+agent-stream-kit = { path = "../agent-stream-kit/agent-stream-kit" }
