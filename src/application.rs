@@ -6,7 +6,7 @@ use agent_stream_kit::{
 use chrono::Utc;
 
 #[derive(Clone, Debug, PartialEq, serde::Serialize)]
-struct ApplicationEvent {
+struct ActiveApplicationEvent {
     t: i64,
     name: String,
     title: String,
@@ -17,13 +17,13 @@ struct ApplicationEvent {
     text: String,
 }
 
-struct ActiveApplicationsAgent {
+struct ActiveApplicationAgent {
     data: AsAgentData,
-    last_event: Option<ApplicationEvent>,
+    last_event: Option<ActiveApplicationEvent>,
 }
 
-impl ActiveApplicationsAgent {
-    fn is_same(&mut self, app_event: &ApplicationEvent) -> bool {
+impl ActiveApplicationAgent {
+    fn is_same(&mut self, app_event: &ActiveApplicationEvent) -> bool {
         if let Some(last_event) = &self.last_event {
             if app_event.x == last_event.x
                 && app_event.y == last_event.y
@@ -38,7 +38,7 @@ impl ActiveApplicationsAgent {
         false
     }
 
-    async fn check_application(&self) -> Option<ApplicationEvent> {
+    async fn check_application(&self) -> Option<ActiveApplicationEvent> {
         const MAX_TITLE_LEN: usize = 250;
 
         match get_active_window() {
@@ -52,7 +52,7 @@ impl ActiveApplicationsAgent {
                 };
 
                 let text = format!("{} {}", win.app_name, win.title).trim().to_string();
-                let info = ApplicationEvent {
+                let info = ActiveApplicationEvent {
                     t: Utc::now().timestamp_millis(),
                     // process_id: win.process_id as i64,
                     // path: path,
@@ -72,7 +72,7 @@ impl ActiveApplicationsAgent {
 }
 
 #[async_trait]
-impl AsAgent for ActiveApplicationsAgent {
+impl AsAgent for ActiveApplicationAgent {
     fn new(
         askit: ASKit,
         id: String,
@@ -103,7 +103,8 @@ impl AsAgent for ActiveApplicationsAgent {
             return Ok(());
         };
 
-        if self.is_same(&app_event) {
+        let skip_unchanged = self.configs()?.get_bool_or_default(CONFIG_SKIP_UNCHANGED);
+        if skip_unchanged && self.is_same(&app_event) {
             return Ok(());
         }
 
@@ -123,19 +124,21 @@ static CATEGORY: &str = "Lifelogging";
 static PIN_UNIT: &str = "unit";
 static PIN_EVENT: &str = "event";
 
+static CONFIG_SKIP_UNCHANGED: &str = "skip_unchanged";
 static CONFIG_IGNORE_LIST: &str = "ignore_list";
 
 pub fn register_agents(askit: &ASKit) {
     askit.register_agent(
         AgentDefinition::new(
             AGENT_KIND,
-            "lifelogging_active_applications",
-            Some(new_agent_boxed::<ActiveApplicationsAgent>),
+            "lifelogging_active_application",
+            Some(new_agent_boxed::<ActiveApplicationAgent>),
         )
-        .title("Active Applications")
+        .title("Active Application")
         .category(CATEGORY)
         .inputs(vec![PIN_UNIT])
         .outputs(vec![PIN_EVENT])
+        .boolean_config(CONFIG_SKIP_UNCHANGED, true)
         .string_config_default(CONFIG_IGNORE_LIST),
     );
 }
