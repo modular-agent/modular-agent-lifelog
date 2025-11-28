@@ -60,14 +60,6 @@ impl AsAgent for ScreenCaptureAgent {
         })
     }
 
-    fn data(&self) -> &AsAgentData {
-        &self.data
-    }
-
-    fn mut_data(&mut self) -> &mut AsAgentData {
-        &mut self.data
-    }
-
     async fn process(
         &mut self,
         ctx: AgentContext,
