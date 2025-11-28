@@ -1,9 +1,18 @@
 use active_win_pos_rs::get_active_window;
 use agent_stream_kit::{
-    ASKit, Agent, AgentConfigs, AgentContext, AgentDefinition, AgentError, AgentOutput, AgentValue,
-    AsAgent, AsAgentData, async_trait, new_agent_boxed,
+    ASKit, Agent, AgentConfigs, AgentContext, AgentError, AgentOutput, AgentValue, AsAgent,
+    AsAgentData, async_trait,
 };
+use askit_macros::askit_agent;
 use chrono::Utc;
+
+static CATEGORY: &str = "Lifelog";
+
+static PIN_UNIT: &str = "unit";
+static PIN_EVENT: &str = "event";
+
+static CONFIG_SKIP_UNCHANGED: &str = "skip_unchanged";
+static CONFIG_IGNORE_LIST: &str = "ignore_list";
 
 #[derive(Clone, Debug, PartialEq, serde::Serialize)]
 struct ActiveApplicationEvent {
@@ -17,6 +26,14 @@ struct ActiveApplicationEvent {
     text: String,
 }
 
+#[askit_agent(
+    title="Active Application",
+    category=CATEGORY,
+    inputs=[PIN_UNIT],
+    outputs=[PIN_EVENT],
+    boolean_config(name=CONFIG_SKIP_UNCHANGED, default=true),
+    string_config(name=CONFIG_IGNORE_LIST),
+)]
 struct ActiveApplicationAgent {
     data: AsAgentData,
     last_event: Option<ActiveApplicationEvent>,
@@ -116,29 +133,4 @@ impl AsAgent for ActiveApplicationAgent {
 
         self.try_output(ctx, PIN_EVENT, AgentValue::from_serialize(&app_event)?)
     }
-}
-
-static AGENT_KIND: &str = "agent";
-static CATEGORY: &str = "Lifelogging";
-
-static PIN_UNIT: &str = "unit";
-static PIN_EVENT: &str = "event";
-
-static CONFIG_SKIP_UNCHANGED: &str = "skip_unchanged";
-static CONFIG_IGNORE_LIST: &str = "ignore_list";
-
-pub fn register_agents(askit: &ASKit) {
-    askit.register_agent(
-        AgentDefinition::new(
-            AGENT_KIND,
-            "lifelogging_active_application",
-            Some(new_agent_boxed::<ActiveApplicationAgent>),
-        )
-        .title("Active Application")
-        .category(CATEGORY)
-        .inputs(vec![PIN_UNIT])
-        .outputs(vec![PIN_EVENT])
-        .boolean_config(CONFIG_SKIP_UNCHANGED, true)
-        .string_config_default(CONFIG_IGNORE_LIST),
-    );
 }

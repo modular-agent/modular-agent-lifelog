@@ -1,10 +1,25 @@
 use agent_stream_kit::{
-    ASKit, Agent, AgentConfigs, AgentContext, AgentDefinition, AgentError, AgentOutput, AgentValue,
-    AsAgent, AsAgentData, async_trait, new_agent_boxed,
+    ASKit, Agent, AgentConfigs, AgentContext, AgentError, AgentOutput, AgentValue, AsAgent,
+    AsAgentData, async_trait,
 };
+use askit_macros::askit_agent;
 use photon_rs::PhotonImage;
 use xcap::Monitor;
 
+static CATEGORY: &str = "Lifelog";
+
+static PIN_UNIT: &str = "unit";
+static PIN_IMAGE: &str = "image";
+
+static CONFIG_SCALE: &str = "scale";
+
+#[askit_agent(
+    title="Screen Capture",
+    category=CATEGORY,
+    inputs=[PIN_UNIT],
+    outputs=[PIN_IMAGE],
+    number_config(name=CONFIG_SCALE, default=1.0)
+)]
 struct ScreenCaptureAgent {
     data: AsAgentData,
 }
@@ -78,27 +93,4 @@ impl AsAgent for ScreenCaptureAgent {
 
         Ok(())
     }
-}
-
-static AGENT_KIND: &str = "agent";
-static CATEGORY: &str = "Lifelogging";
-
-static PIN_UNIT: &str = "unit";
-static PIN_IMAGE: &str = "image";
-
-static CONFIG_SCALE: &str = "scale";
-
-pub fn register_agents(askit: &ASKit) {
-    askit.register_agent(
-        AgentDefinition::new(
-            AGENT_KIND,
-            "lifelogging_screen_capture",
-            Some(new_agent_boxed::<ScreenCaptureAgent>),
-        )
-        .title("Screen Capture")
-        .category(CATEGORY)
-        .inputs(vec![PIN_UNIT])
-        .outputs(vec![PIN_IMAGE])
-        .number_config(CONFIG_SCALE, 1.0),
-    );
 }
