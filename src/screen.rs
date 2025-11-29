@@ -1,6 +1,6 @@
 use agent_stream_kit::{
-    ASKit, Agent, AgentConfigs, AgentContext, AgentError, AgentOutput, AgentValue, AsAgent,
-    AsAgentData, async_trait,
+    ASKit, Agent, AgentConfigs, AgentContext, AgentData, AgentError, AgentOutput, AgentValue,
+    AsAgent, async_trait,
 };
 use askit_macros::askit_agent;
 use photon_rs::PhotonImage;
@@ -21,7 +21,7 @@ static CONFIG_SCALE: &str = "scale";
     number_config(name=CONFIG_SCALE, default=1.0)
 )]
 struct ScreenCaptureAgent {
-    data: AsAgentData,
+    data: AgentData,
 }
 
 impl ScreenCaptureAgent {
@@ -56,7 +56,7 @@ impl AsAgent for ScreenCaptureAgent {
         config: Option<AgentConfigs>,
     ) -> Result<Self, AgentError> {
         Ok(Self {
-            data: AsAgentData::new(askit, id, def_name, config),
+            data: AgentData::new(askit, id, def_name, config),
         })
     }
 

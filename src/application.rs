@@ -1,7 +1,7 @@
 use active_win_pos_rs::get_active_window;
 use agent_stream_kit::{
-    ASKit, Agent, AgentConfigs, AgentContext, AgentError, AgentOutput, AgentValue, AsAgent,
-    AsAgentData, async_trait,
+    ASKit, Agent, AgentConfigs, AgentContext, AgentData, AgentError, AgentOutput, AgentValue,
+    AsAgent, async_trait,
 };
 use askit_macros::askit_agent;
 use chrono::Utc;
@@ -35,7 +35,7 @@ struct ActiveApplicationEvent {
     string_config(name=CONFIG_IGNORE_LIST),
 )]
 struct ActiveApplicationAgent {
-    data: AsAgentData,
+    data: AgentData,
     last_event: Option<ActiveApplicationEvent>,
 }
 
@@ -97,7 +97,7 @@ impl AsAgent for ActiveApplicationAgent {
         config: Option<AgentConfigs>,
     ) -> Result<Self, AgentError> {
         Ok(Self {
-            data: AsAgentData::new(askit, id, def_name, config),
+            data: AgentData::new(askit, id, def_name, config),
             last_event: None,
         })
     }
