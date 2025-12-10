@@ -3,9 +3,8 @@
 use agent_stream_kit::photon_rs::{self, PhotonImage};
 use agent_stream_kit::{
     ASKit, Agent, AgentContext, AgentData, AgentError, AgentOutput, AgentSpec, AgentValue, AsAgent,
-    async_trait,
+    askit_agent, async_trait,
 };
-use askit_macros::askit_agent;
 use xcap::Monitor;
 
 static CATEGORY: &str = "Lifelog";
