@@ -1,6 +1,6 @@
 [package]
 name = "askit-lifelog-agents"
-version = "0.2.6"
+version = "0.2.7"
 edition = "2024"
 authors = ["Akira Ishino <akira@lumilab.jp>"]
 license = "Apache-2.0 OR MIT"
@@ -9,7 +9,7 @@ repository = "https://github.com/agent-stream-kit/askit-lifelog-agents"
 
 [dependencies]
 active-win-pos-rs = { version = "0.9.1", optional = true }
-agent-stream-kit = "0.16.0"
+agent-stream-kit = "0.17.0"
 base64 = { version = "0.22.1", optional = true }
 chrono = "0.4.42"
 serde = { version = "1.0.228", features = ["derive"] }
