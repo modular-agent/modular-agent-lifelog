@@ -1,16 +1,16 @@
 #![cfg(feature = "application")]
 
 use active_win_pos_rs::get_active_window;
-use agent_stream_kit::{
-    ASKit, Agent, AgentContext, AgentData, AgentError, AgentOutput, AgentSpec, AgentValue, AsAgent,
-    askit_agent, async_trait,
+use modular_agent_kit::{
+    MAK, Agent, AgentContext, AgentData, AgentError, AgentOutput, AgentSpec, AgentValue, AsAgent,
+    mak_agent, async_trait,
 };
 use chrono::Utc;
 
 static CATEGORY: &str = "Lifelog";
 
-static PIN_UNIT: &str = "unit";
-static PIN_EVENT: &str = "event";
+static PORT_UNIT: &str = "unit";
+static PORT_EVENT: &str = "event";
 
 static CONFIG_SKIP_UNCHANGED: &str = "skip_unchanged";
 static CONFIG_IGNORE_LIST: &str = "ignore_list";
@@ -27,11 +27,11 @@ struct ActiveApplicationEvent {
     text: String,
 }
 
-#[askit_agent(
+#[mak_agent(
     title="Active Application",
     category=CATEGORY,
-    inputs=[PIN_UNIT],
-    outputs=[PIN_EVENT],
+    inputs=[PORT_UNIT],
+    outputs=[PORT_EVENT],
     boolean_config(name=CONFIG_SKIP_UNCHANGED, default=true),
     string_config(name=CONFIG_IGNORE_LIST),
 )]
@@ -91,9 +91,9 @@ impl ActiveApplicationAgent {
 
 #[async_trait]
 impl AsAgent for ActiveApplicationAgent {
-    fn new(askit: ASKit, id: String, spec: AgentSpec) -> Result<Self, AgentError> {
+    fn new(mak: MAK, id: String, spec: AgentSpec) -> Result<Self, AgentError> {
         Ok(Self {
-            data: AgentData::new(askit, id, spec),
+            data: AgentData::new(mak, id, spec),
             last_event: None,
         })
     }
@@ -101,7 +101,7 @@ impl AsAgent for ActiveApplicationAgent {
     async fn process(
         &mut self,
         ctx: AgentContext,
-        _pin: String,
+        _port: String,
         _value: AgentValue,
     ) -> Result<(), AgentError> {
         let Some(app_event) = self.check_application().await else {
@@ -119,7 +119,7 @@ impl AsAgent for ActiveApplicationAgent {
             return Ok(());
         }
 
-        self.output(ctx, PIN_EVENT, AgentValue::from_serialize(&app_event)?)
+        self.output(ctx, PORT_EVENT, AgentValue::from_serialize(&app_event)?)
             .await
     }
 }

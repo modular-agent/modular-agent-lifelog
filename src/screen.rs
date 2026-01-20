@@ -1,24 +1,24 @@
 #![cfg(feature = "screen")]
 
-use agent_stream_kit::photon_rs::{self, PhotonImage};
-use agent_stream_kit::{
-    ASKit, Agent, AgentContext, AgentData, AgentError, AgentOutput, AgentSpec, AgentValue, AsAgent,
-    askit_agent, async_trait,
+use modular_agent_kit::photon_rs::{self, PhotonImage};
+use modular_agent_kit::{
+    MAK, Agent, AgentContext, AgentData, AgentError, AgentOutput, AgentSpec, AgentValue, AsAgent,
+    mak_agent, async_trait,
 };
 use xcap::Monitor;
 
 static CATEGORY: &str = "Lifelog";
 
-static PIN_UNIT: &str = "unit";
-static PIN_IMAGE: &str = "image";
+static PORT_UNIT: &str = "unit";
+static PORT_IMAGE: &str = "image";
 
 static CONFIG_SCALE: &str = "scale";
 
-#[askit_agent(
+#[mak_agent(
     title="Screen Capture",
     category=CATEGORY,
-    inputs=[PIN_UNIT],
-    outputs=[PIN_IMAGE],
+    inputs=[PORT_UNIT],
+    outputs=[PORT_IMAGE],
     number_config(name=CONFIG_SCALE, default=1.0)
 )]
 struct ScreenCaptureAgent {
@@ -50,16 +50,16 @@ impl ScreenCaptureAgent {
 
 #[async_trait]
 impl AsAgent for ScreenCaptureAgent {
-    fn new(askit: ASKit, id: String, spec: AgentSpec) -> Result<Self, AgentError> {
+    fn new(mak: MAK, id: String, spec: AgentSpec) -> Result<Self, AgentError> {
         Ok(Self {
-            data: AgentData::new(askit, id, spec),
+            data: AgentData::new(mak, id, spec),
         })
     }
 
     async fn process(
         &mut self,
         ctx: AgentContext,
-        _pin: String,
+        _port: String,
         _value: AgentValue,
     ) -> Result<(), AgentError> {
         let mut screenshot = self.take_screenshot().await?;
@@ -77,6 +77,6 @@ impl AsAgent for ScreenCaptureAgent {
         }
 
         let value = AgentValue::image(screenshot);
-        self.output(ctx, PIN_IMAGE, value).await
+        self.output(ctx, PORT_IMAGE, value).await
     }
 }
