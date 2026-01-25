@@ -1,11 +1,11 @@
 #![cfg(feature = "application")]
 
 use active_win_pos_rs::get_active_window;
-use modular_agent_kit::{
-    MAK, Agent, AgentContext, AgentData, AgentError, AgentOutput, AgentSpec, AgentValue, AsAgent,
-    mak_agent, async_trait,
-};
 use chrono::Utc;
+use modular_agent_kit::{
+    Agent, AgentContext, AgentData, AgentError, AgentOutput, AgentSpec, AgentValue, AsAgent, MAK,
+    async_trait, modular_agent,
+};
 
 static CATEGORY: &str = "Lifelog";
 
@@ -27,7 +27,7 @@ struct ActiveApplicationEvent {
     text: String,
 }
 
-#[mak_agent(
+#[modular_agent(
     title="Active Application",
     category=CATEGORY,
     inputs=[PORT_UNIT],

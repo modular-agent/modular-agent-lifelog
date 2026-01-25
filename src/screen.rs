@@ -2,8 +2,8 @@
 
 use modular_agent_kit::photon_rs::{self, PhotonImage};
 use modular_agent_kit::{
-    MAK, Agent, AgentContext, AgentData, AgentError, AgentOutput, AgentSpec, AgentValue, AsAgent,
-    mak_agent, async_trait,
+    Agent, AgentContext, AgentData, AgentError, AgentOutput, AgentSpec, AgentValue, AsAgent, MAK,
+    async_trait, modular_agent,
 };
 use xcap::Monitor;
 
@@ -14,7 +14,7 @@ static PORT_IMAGE: &str = "image";
 
 static CONFIG_SCALE: &str = "scale";
 
-#[mak_agent(
+#[modular_agent(
     title="Screen Capture",
     category=CATEGORY,
     inputs=[PORT_UNIT],

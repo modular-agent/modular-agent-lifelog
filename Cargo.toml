@@ -1,6 +1,6 @@
 [package]
-name = "mak-lifelog-agents"
-version = "0.4.0"
+name = "modular-agent-lifelog"
+version = "0.5.0"
 edition = "2024"
 authors = ["Akira Ishino <akira@lumilab.jp>"]
 license = "Apache-2.0 OR MIT"
@@ -10,10 +10,11 @@ description = "Lifelog Agents for Modular Agent Kit"
 active-win-pos-rs = { version = "0.9.1", optional = true }
 base64 = { version = "0.22.1", optional = true }
 chrono = "0.4.42"
-modular-agent-kit = "0.20.0"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.145"
 xcap = { version = "0.7.1", optional = true }
+
+modular-agent-kit = "0.21.0"
 
 [target.'cfg(target_os = "macos")'.dependencies]
 cocoa = { version = "0.26.0", optional = true }
