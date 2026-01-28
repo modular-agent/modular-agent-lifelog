@@ -2,9 +2,9 @@
 
 use active_win_pos_rs::get_active_window;
 use chrono::Utc;
-use modular_agent_kit::{
-    Agent, AgentContext, AgentData, AgentError, AgentOutput, AgentSpec, AgentValue, AsAgent, MAK,
-    async_trait, modular_agent,
+use modular_agent_core::{
+    Agent, AgentContext, AgentData, AgentError, AgentOutput, AgentSpec, AgentValue, AsAgent,
+    ModularAgent, async_trait, modular_agent,
 };
 
 static CATEGORY: &str = "Lifelog";
@@ -91,9 +91,9 @@ impl ActiveApplicationAgent {
 
 #[async_trait]
 impl AsAgent for ActiveApplicationAgent {
-    fn new(mak: MAK, id: String, spec: AgentSpec) -> Result<Self, AgentError> {
+    fn new(ma: ModularAgent, id: String, spec: AgentSpec) -> Result<Self, AgentError> {
         Ok(Self {
-            data: AgentData::new(mak, id, spec),
+            data: AgentData::new(ma, id, spec),
             last_event: None,
         })
     }
