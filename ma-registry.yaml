@@ -1,0 +1,9 @@
+name: modular-agent-lifelog
+description: Screen capture, window tracking agents
+available_features:
+  - application
+  - screen
+default_features:
+  - application
+  - screen
+default_for: [desktop]
