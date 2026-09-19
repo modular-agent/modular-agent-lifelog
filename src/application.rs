@@ -3,8 +3,8 @@
 use active_win_pos_rs::get_active_window;
 use chrono::Utc;
 use modular_agent_core::{
-    Agent, AgentContext, AgentData, AgentError, AgentOutput, AgentSpec, AgentValue, AsAgent,
-    ModularAgent, async_trait, modular_agent,
+    AsModule, ModularAgent, Module, ModuleContext, ModuleData, ModuleOutput, ModuleSpec, Result,
+    Value, async_trait, modular_agent,
 };
 
 static CATEGORY: &str = "Lifelog";
@@ -35,12 +35,12 @@ struct ActiveApplicationEvent {
     boolean_config(name=CONFIG_SKIP_UNCHANGED, default=true),
     string_config(name=CONFIG_IGNORE_LIST),
 )]
-struct ActiveApplicationAgent {
-    data: AgentData,
+struct ActiveApplicationModule {
+    data: ModuleData,
     last_event: Option<ActiveApplicationEvent>,
 }
 
-impl ActiveApplicationAgent {
+impl ActiveApplicationModule {
     fn is_same(&mut self, app_event: &ActiveApplicationEvent) -> bool {
         if let Some(last_event) = &self.last_event {
             if app_event.x == last_event.x
@@ -90,20 +90,15 @@ impl ActiveApplicationAgent {
 }
 
 #[async_trait]
-impl AsAgent for ActiveApplicationAgent {
-    fn new(ma: ModularAgent, id: String, spec: AgentSpec) -> Result<Self, AgentError> {
+impl AsModule for ActiveApplicationModule {
+    fn new(ma: ModularAgent, id: String, spec: ModuleSpec) -> Result<Self> {
         Ok(Self {
-            data: AgentData::new(ma, id, spec),
+            data: ModuleData::new(ma, id, spec),
             last_event: None,
         })
     }
 
-    async fn process(
-        &mut self,
-        ctx: AgentContext,
-        _port: String,
-        _value: AgentValue,
-    ) -> Result<(), AgentError> {
+    async fn process(&mut self, ctx: ModuleContext, _port: String, _value: Value) -> Result<()> {
         let Some(app_event) = self.check_application().await else {
             return Ok(());
         };
@@ -119,7 +114,7 @@ impl AsAgent for ActiveApplicationAgent {
             return Ok(());
         }
 
-        self.output(ctx, PORT_EVENT, AgentValue::from_serialize(&app_event)?)
+        self.output(ctx, PORT_EVENT, Value::from_serialize(&app_event)?)
             .await
     }
 }

@@ -4,7 +4,7 @@ version = "0.11.0"
 edition = "2024"
 authors = ["Akira Ishino <akira@lumilab.jp>"]
 license = "Apache-2.0 OR MIT"
-description = "Lifelog Agents for Modular Agent"
+description = "Lifelog Modules for Modular Agent"
 
 [dependencies]
 active-win-pos-rs = { version = "0.9.1", optional = true }

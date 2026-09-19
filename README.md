@@ -1,1 +1,1 @@
-# Lifelog Agents for Modular Agent
+# Lifelog Modules for Modular Agent

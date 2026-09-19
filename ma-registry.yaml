@@ -1,5 +1,5 @@
 name: modular-agent-lifelog
-description: Screen capture, window tracking agents
+description: Screen capture, window tracking modules
 available_features:
   - application
   - screen
