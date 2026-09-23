@@ -10,8 +10,10 @@ description = "Lifelog Modules for Modular Agent"
 active-win-pos-rs = { version = "0.9.1", optional = true }
 base64 = { version = "0.22.1", optional = true }
 chrono = "0.4.42"
+log = "0.4"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.145"
+tokio = { version = "1", features = ["rt"], optional = true }
 xcap = { version = "0.7.1", optional = true }
 
 modular-agent-core = { path = "../../crates/modular-agent-core" }
@@ -23,7 +25,18 @@ objc = { version = "0.2.7", optional = true }
 [target.'cfg(target_os = "macos")'.build-dependencies]
 bindgen = { version = "0.68.1", optional = true }
 
+[target.'cfg(target_os = "windows")'.dependencies]
+windows = { version = "0.62", optional = true, features = [
+    "Win32_Foundation",
+    "Win32_System_Com",
+    "Win32_System_Ole",
+    "Win32_System_Variant",
+    "Win32_UI_Accessibility",
+    "Win32_UI_WindowsAndMessaging",
+] }
+
 [features]
-default = ["application", "screen"]
+default = ["application", "browser-url", "screen"]
 application = ["active-win-pos-rs", "cocoa", "objc", "bindgen"]
+browser-url = ["application", "tokio", "windows"]
 screen = ["base64", "xcap"]

@@ -2,8 +2,10 @@ name: modular-agent-lifelog
 description: Screen capture, window tracking modules
 available_features:
   - application
+  - browser-url
   - screen
 default_features:
   - application
+  - browser-url
   - screen
 default_for: [desktop]
